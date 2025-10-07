@@ -1,47 +1,71 @@
 #include "RSA.h"
 #include "BigInt.hpp"
 
+BigInt hexStringToBigInt(const std::string& hex);
+
 std::string encrypt(const std::string& encrypt)
 {
-    long long int passwordHex = stringToHex(encrypt);
-    std::cout << passwordHex << std::endl;
-    auto passwd = BigInt::BigInt(passwordHex);
-    auto modulus = BigInt::BigInt(std::to_string(MODULUS));
+    std::string passwordHex = stringToHex(encrypt);
+    auto passwd = hexStringToBigInt(passwordHex);
+    auto modulus = BigInt::BigInt(std::string(MODULUS));
     return BigInt::modPow(passwd, BigInt::BigInt(EXPONENT), modulus).to_string();
 }
+
 std::string decrypt(const std::string& decrypt, const std::string& key)
 {
     auto encPasswd = BigInt::BigInt(decrypt);
-    auto modulus = BigInt::BigInt(std::to_string(MODULUS));
+    auto modulus = BigInt::BigInt(std::string(MODULUS));
     auto decrypted = BigInt::modPow(encPasswd, BigInt::BigInt(key), modulus).to_string();
     auto asciiNumber = decimalToHex(decrypted);
     return hexToAscii(asciiNumber);
 }
-unsigned long long stringToHex(const std::string& input)
+
+std::string stringToHex(const std::string & input)
 {
-    unsigned long long passwd = 0;
-    //54091677185334
+    std::stringstream stream;
+
     for (unsigned char chr : input)
     {
-        //each char is one byte, that mean 8 bits
-        passwd = passwd << 8;
-        passwd = passwd | static_cast<unsigned char>(chr);
+        stream << std::hex << int(chr);
     }
-    return passwd;
+    return stream.str();
+}
+
+BigInt hexStringToBigInt(const std::string& hex)
+{
+    BigInt value = 0;
+    unsigned int digit = 0;
+    for (char ch : hex)
+    {
+        if (ch >= '0' && ch <= '9') digit = ch - '0';
+        else if (ch >= 'a' && ch <= 'f') digit = ch - 'a' + 10;
+        else if (ch >= 'A' && ch <= 'F') digit = ch - 'A' + 10;
+        else continue;
+
+        value = value * 16 + digit;
+    }
+    return value;
 }
 
 std::string decimalToHex(const std::string& input)
 {
-    unsigned long long value = 0;
-    std::stringstream ss(input);
-    ss >> value; //read as decimal
+    if (input == "0") return "0";
+    BigInt value(input);
 
-    std::stringstream hexStream;
-    hexStream << std::hex << std::uppercase << value; //convert to hex
+    std::string hexStr;
+    BigInt sixteen(16);
 
-    return hexStream.str();
+    while (value > 0)
+    {
+        BigInt remainder = value % sixteen;    
+        int digit = remainder.to_int();         
+        if (digit < 10) hexStr = char('0' + digit) + hexStr;
+        else hexStr = char('A' + digit - 10) + hexStr; //for example for F = it would be 15 % 16 = 15 which would be 5 + 'A' which is F
+
+        value /= sixteen;
+    }
+    return hexStr;
 }
-
 std::string hexToAscii(const std::string& hex)
 {
     std::string output = "";

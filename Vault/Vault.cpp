@@ -87,10 +87,11 @@ void Vault::removeFromVault(const std::string& entry)
 	std::cout << "No Entry To Delete" << std::endl;
 }
 
-void Vault::getEntryFromVault(const std::string& entry)
+void Vault::getEntryFromVault(const std::string& entry, const std::string passwd)
 {
-	std::cout << (m_vault[entry].empty() ? "No Entry Found!\n" : m_vault[entry]);
+	std::cout << (m_vault[entry].empty() ? "No Entry Found!\n" : decrypt(m_vault[entry], passwd));
 }
+
 
 void Vault::createVault()
 {

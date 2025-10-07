@@ -16,7 +16,7 @@ public:
 	void addToVault(const std::string& entry, const std::string& value);
 	void listVault();
 	void removeFromVault(const std::string& entry);
-	void getEntryFromVault(const std::string& entry);
+	void getEntryFromVault(const std::string& entry, const std::string passwd);
 
 private:
 	std::string m_fileName;

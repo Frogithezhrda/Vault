@@ -22,5 +22,6 @@ private:
 	void add(const std::vector<std::string>& param);
 	void removeEntry(const std::vector<std::string>& param);
 	void get(const std::vector<std::string>& param);
+	void help(const std::vector<std::string>& param);
 	void list(const std::vector<std::string>& param);
 };

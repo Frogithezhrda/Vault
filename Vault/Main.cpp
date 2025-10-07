@@ -9,7 +9,6 @@ int main(int argc, char* argv[])
 		std::cout << "Usage: Need At Least 2 Arguements\n";
 		return 1;
 	}
-	std::cout << decrypt("4544156370423533006", "1331789433491887183");
 	Vault vlt;
 	Menu menu(vlt);
 	try
