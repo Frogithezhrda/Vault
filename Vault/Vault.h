@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include "RSA.h"
+#include <Windows.h>
 
 constexpr const unsigned char SIGNATURE[] = { 0x05, 0x04, 0x04, 0x05, 0x056, 0x04C, 0x054, 0x00A };
 

@@ -89,7 +89,37 @@ void Vault::removeFromVault(const std::string& entry)
 
 void Vault::getEntryFromVault(const std::string& entry, const std::string passwd)
 {
-	std::cout << (m_vault[entry].empty() ? "No Entry Found!\n" : decrypt(m_vault[entry], passwd));
+	STARTUPINFOA startupInfo = { 0 };
+	LPSTARTUPINFOA pStartupInfo = &startupInfo;
+	PROCESS_INFORMATION procInfo = { 0 };
+	LPPROCESS_INFORMATION pProcInfo = &procInfo;
+	std::string commandLineArgs = "Messenger.exe";
+	if (m_vault[entry].empty())
+	{
+		std::cout << "No Entry Found!\n";
+		return;
+	}
+	try
+	{
+		commandLineArgs += " " + decrypt(m_vault[entry], passwd);
+
+	}
+	catch (const std::exception&) {}
+	bool processCreated = CreateProcessA(
+		NULL,
+		(LPSTR)commandLineArgs.c_str(),
+		NULL,
+		NULL,
+		FALSE,
+		DETACHED_PROCESS,
+		NULL,
+		NULL,
+		pStartupInfo,
+		pProcInfo
+	);
+	WaitForSingleObject(procInfo.hThread, 3);
+	std::cout << "Sended It To Your Phone" << std::endl;
+
 }
 
 
